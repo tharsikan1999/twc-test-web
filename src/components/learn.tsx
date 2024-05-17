@@ -2,30 +2,34 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
-const schema = z
-  .object({
-    email: z.string().email().min(1).max(255),
-    password: z
-      .string()
-      .regex(/[A-Z]/, {
-        message: "Password must contain at least one uppercase letter",
-      })
-      .regex(/[a-z]/, {
-        message: "Password must contain at least one lowercase letter",
-      })
-      .regex(/[0-9]/, {
-        message: "Password must contain at least one numeric digit",
-      })
-      .regex(/[^a-zA-Z0-9]/, {
-        message: "Password must contain at least one special character",
-      })
-      .min(8),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
+enum Gender {
+  Male = "male",
+  Female = "female",
+}
+
+const schema = z.object({
+  email: z
+    .string()
+    .email({ message: "Invalid email address" })
+    .min(1, { message: "Email is required" })
+    .max(255),
+  name: z
+    .string()
+    .min(1, { message: "Name is required" })
+    .max(255, { message: "Name must be less than 255 characters" }),
+  gender: z.nativeEnum(Gender, {
+    errorMap: (issue) => {
+      switch (issue.code) {
+        default:
+          return { message: "gender is required" };
+      }
+    },
+  }),
+  phone: z
+    .string()
+    .min(1, { message: "Phone number is required" })
+    .max(20, { message: "Phone number must be less than 20 characters" }),
+});
 
 type FormFields = z.infer<typeof schema>;
 
@@ -34,7 +38,6 @@ const Learn = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    watch,
   } = useForm<FormFields>({
     resolver: zodResolver(schema),
   });
@@ -47,29 +50,48 @@ const Learn = () => {
     }
   };
 
-  const password = watch("password");
-
   return (
     <form className="tutorial gap-2" onSubmit={handleSubmit(onSubmit)}>
       <input {...register("email")} type="text" placeholder="Email" />
       {errors.email && (
         <div className="text-red-500">{errors.email.message}</div>
       )}
-      <input {...register("password")} type="password" placeholder="Password" />
-      {errors.password && (
-        <div className="text-red-500">{errors.password.message}</div>
+
+      <input {...register("name")} type="text" placeholder="Name" />
+      {errors.name && <div className="text-red-500">{errors.name.message}</div>}
+
+      {/* Gender Input */}
+      <div>
+        <label htmlFor="male" className="mr-2">
+          Male
+          <input
+            id="male"
+            {...register("gender", { required: "Gender is required" })}
+            type="radio"
+            value="male"
+            name="gender"
+          />
+        </label>
+        <label htmlFor="female">
+          Female
+          <input
+            id="female"
+            {...register("gender", { required: "Gender is required" })}
+            type="radio"
+            value="female"
+            name="gender"
+          />
+        </label>
+      </div>
+      {errors.gender && (
+        <div className="text-red-500">{errors.gender.message}</div>
       )}
-      <input
-        {...register("confirmPassword")}
-        type="password"
-        placeholder="Confirm Password"
-      />
-      {errors.confirmPassword && (
-        <div className="text-red-500">{errors.confirmPassword.message}</div>
+
+      <input {...register("phone")} type="text" placeholder="Phone" />
+      {errors.phone && (
+        <div className="text-red-500">{errors.phone.message}</div>
       )}
-      {password && (
-        <div className="text-red-500">{errors.confirmPassword?.message}</div>
-      )}
+
       <button disabled={isSubmitting} type="submit">
         {isSubmitting ? "Loading..." : "Submit"}
       </button>

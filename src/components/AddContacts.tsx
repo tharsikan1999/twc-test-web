@@ -4,9 +4,64 @@ import logoutIMG from "../assets/img/bx_log-out-circle.png";
 import Ellipse01 from "../assets/img/Ellipse 1.png";
 import RightImg from "../assets/img/Right_back.png";
 import LeftImg from "../assets/img/Left_back.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
+import { toast } from "react-toastify";
+
+enum Gender {
+  Male = "male",
+  Female = "female",
+}
+
+const schema = z.object({
+  email: z
+    .string()
+    .email({ message: "Invalid email address" })
+    .min(1, { message: "Email is required" })
+    .max(255),
+  name: z
+    .string()
+    .min(1, { message: "Name is required" })
+    .max(255, { message: "Name must be less than 255 characters" }),
+  gender: z.nativeEnum(Gender, {
+    errorMap: (issue) => {
+      switch (issue.code) {
+        default:
+          return { message: "gender is required" };
+      }
+    },
+  }),
+  phone: z
+    .string()
+    .min(1, { message: "Phone number is required" })
+    .max(20, { message: "Phone number must be less than 20 characters" }),
+});
+
+type FormFields = z.infer<typeof schema>;
 
 function AddContact() {
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormFields>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    try {
+      toast.success("Contact added successfully");
+      console.log(data);
+      navigate("/contacts");
+    } catch (error) {
+      toast.error("An error occurred");
+      console.log(error);
+    }
+  };
+
   return (
     <main
       className="w-full min-h-screen flex flex-col lg:items-center lg:relative "
@@ -45,73 +100,107 @@ function AddContact() {
             <h1 className="text-[40px] md:text-[50px] lg:mt-24 font-bold text-white text-center mt-5 lg:text-left">
               New Contact
             </h1>
-            <form className="w-full mt-10 lg:mt-16 px-6 lg:px-0">
+            <form
+              className="w-full mt-10 lg:mt-16 px-6 lg:px-0"
+              onSubmit={handleSubmit(onSubmit)}
+            >
               <div className="flex flex-col items-center lg:flex-row lg:space-x-10 lg:justify-between lg:w-3/4">
-                <input
-                  type="text"
-                  name="name"
-                  className="bg-white rounded-3xl mb-10 focus:ring-blue-500 focus:border-blue-500 block w-full lg:text-[25px] h-[55px] pl-[41px] dark:focus:ring-blue-500 dark:focus:border-blue-500 text-customGreen placeholder-customGreen sm:w-3/4 md:w-[477px]"
-                  placeholder="Full name"
-                  required
-                />
-
-                <input
-                  type="email"
-                  name="email"
-                  className="bg-white rounded-3xl mb-10 focus:ring-blue-500 focus:border-blue-500 block h-[55px] pl-[41px] lg:text-[25px] dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full text-customGreen placeholder-customGreen sm:w-3/4 md:w-[477px]"
-                  placeholder="Email"
-                  required
-                />
+                <div className="  mb-10">
+                  <input
+                    {...register("name")}
+                    type="text"
+                    name="name"
+                    className="bg-white rounded-3xl  focus:ring-blue-500 focus:border-blue-500 block w-full lg:text-[25px] h-[55px] pl-[41px] dark:focus:ring-blue-500 dark:focus:border-blue-500 text-customGreen placeholder-customGreen sm:w-3/4 md:w-[477px]"
+                    placeholder="Full name"
+                  />
+                  {errors.name && (
+                    <div className="text-red-500 ml-5 mt-5 text-xl">
+                      {errors.name.message}
+                    </div>
+                  )}
+                </div>
+                <div className="  mb-10">
+                  <input
+                    type="email"
+                    className="bg-white rounded-3xl  focus:ring-blue-500 focus:border-blue-500 block h-[55px] pl-[41px] lg:text-[25px] dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full text-customGreen placeholder-customGreen sm:w-3/4 md:w-[477px]"
+                    placeholder="Email"
+                    {...register("email")}
+                  />
+                  {errors.email && (
+                    <div className="text-red-500 ml-5 mt-5 text-xl">
+                      {errors.email.message}
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="flex flex-col items-center lg:flex-row lg:space-x-10 lg:justify-between lg:w-3/4">
-                <input
-                  type="text"
-                  name="phone"
-                  className="bg-white rounded-3xl mb-10 focus:ring-blue-500 focus:border-blue-500 block w-full lg:text-[25px] h-[55px] pl-[41px] dark:focus:ring-blue-500 dark:focus:border-blue-500 text-customGreen placeholder-customGreen sm:w-3/4 md:w-[477px]"
-                  placeholder="Phone number"
-                  required
-                />
+                <div className="  mb-10">
+                  <input
+                    type="text"
+                    className="bg-white rounded-3xl  focus:ring-blue-500 focus:border-blue-500 block w-full lg:text-[25px] h-[55px] pl-[41px] dark:focus:ring-blue-500 dark:focus:border-blue-500 text-customGreen placeholder-customGreen sm:w-3/4 md:w-[477px]"
+                    placeholder="Phone number"
+                    {...register("phone")}
+                  />
+                  {errors.phone && (
+                    <div className="text-red-500 ml-5 mt-5 text-xl">
+                      {errors.phone.message}
+                    </div>
+                  )}
+                </div>
 
-                <div className="flex items-center space-x-3 lg:w-[477px] lg:justify-between lg:pl-2">
-                  <p className="text-[20px] lg:text-[25px] text-white font-normal">
-                    Gender
-                  </p>
-                  <div className="flex items-center space-x-3">
-                    <input
-                      id="male"
-                      type="radio"
-                      name="gender"
-                      value="Male"
-                      className="w-4 h-4 ml-10 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
-                    />
-
-                    <span className="text-[20px] lg:text-[25px] text-white font-normal">
+                <div className="  mb-10">
+                  <div className="flex items-center space-x-3 lg:w-[477px] lg:justify-between lg:pl-2">
+                    <p className="text-[20px] lg:text-[25px] text-white font-normal">
+                      Gender
+                    </p>
+                    <label
+                      htmlFor="male"
+                      className="text-[20px] lg:text-[25px] text-white font-normal flex items-center"
+                    >
                       Male
-                    </span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <input
-                      id="female"
-                      type="radio"
-                      name="gender"
-                      value="Female"
-                      className="w-4 h-4 ml-10 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
-                    />
-                    <span className="text-[20px] lg:text-[25px] text-white font-normal">
+                      <input
+                        id="male"
+                        {...register("gender", {
+                          required: "Gender is required",
+                        })}
+                        type="radio"
+                        value="male"
+                        name="gender"
+                        className="w-4 h-4 ml-10 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                      />
+                    </label>
+                    <label
+                      htmlFor="female"
+                      className="text-[20px] lg:text-[25px] text-white font-normal flex items-center"
+                    >
                       Female
-                    </span>
+                      <input
+                        id="female"
+                        {...register("gender", {
+                          required: "Gender is required",
+                        })}
+                        type="radio"
+                        value="female"
+                        name="gender"
+                        className="w-4 h-4 ml-10 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                      />
+                    </label>
                   </div>
+
+                  {errors.gender && (
+                    <div className="text-red-500 ml-5 mt-5 text-xl">
+                      {errors.gender.message}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="flex justify-center mt-10 lg:justify-start 2xl:mt-16">
-                <Link to="/contacts">
-                  <button
-                    type="submit"
-                    className="text-white bg-customGreen border-2 focus:outline-none focus:ring-gray-300 border-white px-5 md:w-[323px] h-[38px] md:h-[48px] rounded-full text-[20px] md:text-[25px] sm:text-[16px] font-normal"
-                  >
-                    Add your first contact
-                  </button>
-                </Link>
+                <button
+                  type="submit"
+                  className="text-white bg-customGreen border-2 focus:outline-none focus:ring-gray-300 border-white px-5 md:w-[323px] h-[38px] md:h-[48px] rounded-full text-[20px] md:text-[25px] sm:text-[16px] font-normal"
+                >
+                  Add your first contact
+                </button>
               </div>
             </form>
           </div>
