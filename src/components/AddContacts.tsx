@@ -4,6 +4,7 @@ import logoutIMG from "../assets/img/bx_log-out-circle.png";
 import Ellipse01 from "../assets/img/Ellipse 1.png";
 import RightImg from "../assets/img/Right_back.png";
 import LeftImg from "../assets/img/Left_back.png";
+import { Link } from "react-router-dom";
 
 function AddContact() {
   return (
@@ -27,11 +28,13 @@ function AddContact() {
           <div className="my-5 lg:w-3/4 mt-[72px]">
             <div className="w-full flex flex-col items-center lg:items-start">
               <div>
-                <img
-                  src={logo}
-                  alt="logo"
-                  className="h-[24.03px] w-[72.94px] cursor-pointer mb-3"
-                />
+                <Link to="/">
+                  <img
+                    src={logo}
+                    alt="logo"
+                    className="h-[24.03px] w-[72.94px] cursor-pointer mb-3"
+                  />
+                </Link>
                 <img
                   src={contactIMG}
                   alt="logo"
@@ -101,12 +104,14 @@ function AddContact() {
                 </div>
               </div>
               <div className="flex justify-center mt-10 lg:justify-start 2xl:mt-16">
-                <button
-                  type="submit"
-                  className="text-white bg-customGreen border-2 focus:outline-none focus:ring-gray-300 border-white px-5 md:w-[323px] h-[38px] md:h-[48px] rounded-full text-[20px] md:text-[25px] sm:text-[16px] font-normal"
-                >
-                  Add your first contact
-                </button>
+                <Link to="/contacts">
+                  <button
+                    type="submit"
+                    className="text-white bg-customGreen border-2 focus:outline-none focus:ring-gray-300 border-white px-5 md:w-[323px] h-[38px] md:h-[48px] rounded-full text-[20px] md:text-[25px] sm:text-[16px] font-normal"
+                  >
+                    Add your first contact
+                  </button>
+                </Link>
               </div>
             </form>
           </div>

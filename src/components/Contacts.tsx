@@ -9,6 +9,7 @@ import { FiRefreshCw } from "react-icons/fi";
 import Ellipse01 from "../assets/img/Ellipse 1.png";
 import RightImg from "../assets/img/Right_back.png";
 import LeftImg from "../assets/img/Left_back.png";
+import { Link } from "react-router-dom";
 
 function Contacts() {
   const data = [
@@ -108,13 +109,15 @@ function Contacts() {
             {/* Header Section */}
             <div className="w-full flex flex-col items-center lg:items-start mt-[72px]">
               <div>
-                <img
-                  src={logo}
-                  alt="Logo"
-                  height={24.03}
-                  width={72.94}
-                  className="cursor-pointer mb-3"
-                />
+                <Link to="/">
+                  <img
+                    src={logo}
+                    alt="Logo"
+                    height={24.03}
+                    width={72.94}
+                    className="cursor-pointer mb-3"
+                  />
+                </Link>
                 <img
                   src={contactIMG}
                   alt="Contact img"
@@ -130,12 +133,14 @@ function Contacts() {
               <h1 className="text-[30px] md:text-[50px] my-10 font-bold text-white text-left">
                 Contacts
               </h1>
-              <button
-                type="button"
-                className="text-white leading-4 bg-customGreen border-2 focus:outline-none focus:ring-gray-300 border-white w-[150px] sm:w-[255px] h-[38px] md:h-[48px] rounded-full text-[14px] md:text-[25px] sm:text-[20px] font-normal"
-              >
-                Add New Contact
-              </button>
+              <Link to="/contacts/new">
+                <button
+                  type="button"
+                  className="text-white leading-4 bg-customGreen border-2 focus:outline-none focus:ring-gray-300 border-white w-[150px] sm:w-[255px] h-[38px] md:h-[48px] rounded-full text-[14px] md:text-[25px] sm:text-[20px] font-normal"
+                >
+                  Add New Contact
+                </button>
+              </Link>
             </div>
 
             {/* Contacts Table */}

@@ -1,6 +1,7 @@
 import logo from "../assets/img/logo.png";
 import contactIMG from "../assets/img/contacts portal.png";
 import Ellipse from "../assets/img/auth-Ellipse.png";
+import { Link } from "react-router-dom";
 
 function Login() {
   return (
@@ -41,21 +42,25 @@ function Login() {
 
           <div className=" flex justify-between items-center md:flex-row flex-col mt-8">
             <div className="flex justify-center md:justify-start ">
-              <button
-                type="submit"
-                className="text-white bg-customGreen border-2 focus:outline-none focus:ring-gray-300 px-10 h-[48px] md:text-[25px] text-[23px] border-1 border-white rounded-[50px]"
-              >
-                login
-              </button>
+              <Link to="/contacts/new">
+                <button
+                  type="submit"
+                  className="text-white bg-customGreen border-2 focus:outline-none focus:ring-gray-300 px-10 h-[48px] md:text-[25px] text-[23px] border-1 border-white rounded-[50px]"
+                >
+                  login
+                </button>
+              </Link>
             </div>
 
             <div className="flex justify-start mt-6 md:mt-0">
               <div className="h-[40px] text-white ml-4 flex items-center">
                 <p className="text-[20px] md:text-[25px]">
                   or{" "}
-                  <span className="underline underline-offset-4 cursor-pointer">
-                    Click here to Register
-                  </span>
+                  <Link to="/register">
+                    <span className="underline underline-offset-4 cursor-pointer">
+                      Click here to Register
+                    </span>
+                  </Link>
                 </p>
               </div>
             </div>
@@ -72,11 +77,13 @@ function Login() {
         ></div>
         <div className="w-full flex flex-col lg:pl-10 justify-center items-center">
           <div>
-            <img
-              src={logo}
-              alt="logo"
-              className="h-[60px] w-[170px] cursor-pointer mb-14 md:mb-5"
-            />
+            <Link to="/">
+              <img
+                src={logo}
+                alt="logo"
+                className="h-[60px] w-[170px] cursor-pointer mb-14 md:mb-5"
+              />
+            </Link>
             <img src={contactIMG} alt="contact img" />
           </div>
         </div>

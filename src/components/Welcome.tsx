@@ -4,6 +4,7 @@ import logoutIMG from "../assets/img/bx_log-out-circle.png";
 import Ellipse01 from "../assets/img/Ellipse 1.png";
 import RightImg from "../assets/img/Right_back.png";
 import LeftImage from "../assets/img/Left_back.png";
+import { Link } from "react-router-dom";
 
 function Welcome() {
   return (
@@ -32,11 +33,13 @@ function Welcome() {
                   alt="logo"
                   className="h-[24.03px] w-[72.94px] cursor-pointer mb-3"
                 />
-                <img
-                  src={contactIMG}
-                  alt="logo"
-                  className="w-[136.76px] h-[60.77px]"
-                />
+                <Link to="/">
+                  <img
+                    src={contactIMG}
+                    alt="logo"
+                    className="w-[136.76px] h-[60.77px]"
+                  />
+                </Link>
               </div>
             </div>
             <h1 className="text-[40px] md:text-[50px] lg:mt-32 font-bold text-white text-center mt-28 lg:text-left">
@@ -48,12 +51,14 @@ function Welcome() {
             </p>
             <form action="" className="w-full mt-32 lg:mt-20 px-6  lg:px-0 ">
               <div className=" flex justify-center mt-10 lg:justify-start lg:mt-20 ">
-                <button
-                  type="button"
-                  className="text-white bg-customGreen border-2 focus:outline-none  focus:ring-gray-300  border-white px-2  md:w-[323px] w-[280px] h-[38px] md:h-[48px] rounded-full text-[20px] md:text-[25px] font-normal"
-                >
-                  add your first contact
-                </button>
+                <Link to="/login">
+                  <button
+                    type="button"
+                    className="text-white bg-customGreen border-2 focus:outline-none  focus:ring-gray-300  border-white px-2  md:w-[323px] w-[280px] h-[38px] md:h-[48px] rounded-full text-[20px] md:text-[25px] font-normal"
+                  >
+                    add your first contact
+                  </button>
+                </Link>
               </div>
             </form>
             <div className="flex space-x-3 items-center justify-center cursor-pointer lg:mt-14 w-full lg:w-auto absolute  lg:right-14 bottom-10 lg:bottom-14">
