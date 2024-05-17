@@ -1,8 +1,7 @@
 import logo from "../assets/img/logo.png";
 import contactIMG from "../assets/img/contacts portal.png";
 import Ellipse from "../assets/img/auth-Ellipse.png";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -30,6 +29,7 @@ const schema = z.object({
 type FormFields = z.infer<typeof schema>;
 
 function Login() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -42,6 +42,7 @@ function Login() {
     try {
       console.log(data);
       toast.success("Login successful");
+      navigate("/contacts/new");
     } catch (error) {
       console.log(error);
       toast.error("Login failed");

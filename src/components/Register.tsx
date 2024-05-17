@@ -1,12 +1,11 @@
 import logo from "../assets/img/logo.png";
 import contactIMG from "../assets/img/contacts portal.png";
 import Ellipse from "../assets/img/auth-Ellipse.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "react-toastify";
-
 const schema = z
   .object({
     email: z.string().email().min(1).max(255),
@@ -35,6 +34,7 @@ const schema = z
 type FormFields = z.infer<typeof schema>;
 
 function Register() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -46,6 +46,7 @@ function Register() {
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     try {
       toast.success("Registration successful");
+      navigate("/login");
       console.log(data);
     } catch (error) {
       toast.error("Registration failed");
@@ -85,7 +86,7 @@ function Register() {
               placeholder="e-mail"
             />
             {errors.email && (
-              <div className="text-red-500">{errors.email.message}</div>
+              <div className="text-red-500 mb-10">{errors.email.message}</div>
             )}
 
             {/* Password Input */}
@@ -97,7 +98,9 @@ function Register() {
               placeholder="create password"
             />
             {errors.password && (
-              <div className="text-red-500">{errors.password.message}</div>
+              <div className="text-red-500 mb-10">
+                {errors.password.message}
+              </div>
             )}
 
             {/* Confirm Password Input */}
@@ -109,7 +112,7 @@ function Register() {
               placeholder="confirm password"
             />
             {errors.confirmPassword && (
-              <div className="text-red-500">
+              <div className="text-red-500 mb-10">
                 {errors.confirmPassword.message}
               </div>
             )}
