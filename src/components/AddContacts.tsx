@@ -111,7 +111,7 @@ function AddContact() {
             </form>
           </div>
         </div>
-        <div className="flex space-x-3 items-center justify-center cursor-pointer mt-14 lg:absolute lg:right-14 lg:bottom-14">
+        <div className="flex space-x-3 items-center justify-center cursor-pointer lg:mt-14 w-full lg:w-auto absolute  lg:right-14  lg:bottom-14  z-50 bottom-10">
           <img
             src={logoutIMG}
             alt="logout IMG"

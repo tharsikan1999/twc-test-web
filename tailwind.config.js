@@ -2,7 +2,14 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        back: "url('assets/img/background.png')",
+      },
+      colors: {
+        customGreen: "#083F46",
+      },
+    },
   },
   plugins: [],
 };
