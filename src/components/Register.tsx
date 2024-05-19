@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "react-toastify";
+import axios from "axios";
+
 const schema = z
   .object({
     email: z.string().email().min(1).max(255),
@@ -45,9 +47,23 @@ function Register() {
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     try {
-      toast.success("Registration successful");
-      navigate("/login");
-      console.log(data);
+      const response = await axios.post("http://localhost:3333/auth/register", {
+        email: data.email,
+        password: data.password,
+      });
+
+      //email is already registered
+      if (response.data === "Email already exists") {
+        toast.error("Email is already registered");
+        return;
+      }
+
+      // Handle successful registration
+      if (response.status === 201) {
+        toast.success("Registration successful");
+        // Redirect to welcome page
+        navigate("/login");
+      }
     } catch (error) {
       toast.error("Registration failed");
       console.log(error);
