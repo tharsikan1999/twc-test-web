@@ -4,9 +4,18 @@ import logoutIMG from "../assets/img/bx_log-out-circle.png";
 import Ellipse01 from "../assets/img/Ellipse 1.png";
 import RightImg from "../assets/img/Right_back.png";
 import LeftImage from "../assets/img/Left_back.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Welcome() {
+  const navigate = useNavigate();
+  const goToPage = () => {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      navigate("/contacts"); // Replace with your dashboard path
+    } else {
+      navigate("/login");
+    }
+  };
   return (
     <main
       className="w-full min-h-screen flex flex-col lg:items-center lg:relative "
@@ -51,14 +60,13 @@ function Welcome() {
             </p>
             <form action="" className="w-full mt-32 lg:mt-20 px-6  lg:px-0 ">
               <div className=" flex justify-center mt-10 lg:justify-start lg:mt-20 ">
-                <Link to="/login">
-                  <button
-                    type="button"
-                    className="text-white bg-customGreen border-2 focus:outline-none  focus:ring-gray-300  border-white px-2  md:w-[323px] w-[280px] h-[38px] md:h-[48px] rounded-full text-[20px] md:text-[25px] font-normal"
-                  >
-                    add your first contact
-                  </button>
-                </Link>
+                <button
+                  type="button"
+                  onClick={goToPage}
+                  className="text-white bg-customGreen border-2 focus:outline-none  focus:ring-gray-300  border-white px-2  md:w-[323px] w-[280px] h-[38px] md:h-[48px] rounded-full text-[20px] md:text-[25px] font-normal"
+                >
+                  add your first contact
+                </button>
               </div>
             </form>
             <div className="flex space-x-3 items-center justify-center cursor-pointer lg:mt-14 w-full lg:w-auto absolute  lg:right-14 bottom-10 lg:bottom-14">

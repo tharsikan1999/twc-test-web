@@ -60,6 +60,9 @@ function Login() {
 
       //login successful
       if (response.status === 201) {
+        //store token in local storage
+        localStorage.setItem("jwt", response.data.accessToken);
+
         toast.success("Login successful");
         navigate("/contacts/new");
       }
