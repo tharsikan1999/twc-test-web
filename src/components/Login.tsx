@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const schema = z.object({
   email: z.string().email().min(1).max(255),
@@ -40,9 +41,28 @@ function Login() {
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     try {
-      console.log(data);
-      toast.success("Login successful");
-      navigate("/contacts/new");
+      const response = await axios.post("http://localhost:3333/auth/login", {
+        email: data.email,
+        password: data.password,
+      });
+
+      //user does not exist
+      if (response.data === "User not found") {
+        toast.error("User does not exist");
+        return;
+      }
+
+      //incorrect password
+      if (response.data === "Invalid password") {
+        toast.error("Incorrect password");
+        return;
+      }
+
+      //login successful
+      if (response.status === 201) {
+        toast.success("Login successful");
+        navigate("/contacts/new");
+      }
     } catch (error) {
       console.log(error);
       toast.error("Login failed");
