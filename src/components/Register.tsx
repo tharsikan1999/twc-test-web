@@ -82,11 +82,13 @@ function Register() {
               {...register("email")}
               type="email"
               name="email"
-              className="bg-white rounded-3xl mb-10 focus:ring-blue-500 focus:border-blue-500 block w-full h-[55px] pl-[41px] dark:focus:ring-blue-500 dark:focus:border-blue-500 text-customGreen placeholder-customGreen md:w-[477px] lg:text-[25px] text-[20px] font-normal"
+              className={`bg-white rounded-3xl ${
+                errors.email ? "mb-5" : "mb-10"
+              } focus:ring-blue-500 focus:border-blue-500 block w-full h-[55px] pl-[41px] dark:focus:ring-blue-500 dark:focus:border-blue-500 text-customGreen placeholder-customGreen md:w-[477px] lg:text-[25px] text-[20px] font-normal`}
               placeholder="e-mail"
             />
             {errors.email && (
-              <div className="text-red-500 mb-10">{errors.email.message}</div>
+              <div className="text-red-500 mb-5">{errors.email.message}</div>
             )}
 
             {/* Password Input */}
@@ -94,13 +96,13 @@ function Register() {
               {...register("password")}
               type="password"
               name="password"
-              className="bg-white rounded-3xl mb-10 focus:ring-blue-500 focus:border-blue-500 block h-[55px] pl-[41px] dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full text-customGreen placeholder-customGreen md:w-[477px] lg:text-[25px] text-[20px] font-normal"
+              className={`bg-white rounded-3xl ${
+                errors.email ? "mb-5" : "mb-10"
+              } focus:ring-blue-500 focus:border-blue-500 block h-[55px] pl-[41px] dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full text-customGreen placeholder-customGreen md:w-[477px] lg:text-[25px] text-[20px] font-normal`}
               placeholder="create password"
             />
             {errors.password && (
-              <div className="text-red-500 mb-10">
-                {errors.password.message}
-              </div>
+              <div className="text-red-500 mb-5">{errors.password.message}</div>
             )}
 
             {/* Confirm Password Input */}
@@ -108,11 +110,13 @@ function Register() {
               {...register("confirmPassword")}
               type="password"
               name="confirmPassword"
-              className="bg-white rounded-3xl mb-10 focus:ring-blue-500 focus:border-blue-500 block w-full h-[55px] pl-[41px] dark:focus:ring-blue-500 dark:focus:border-blue-500 text-customGreen placeholder-customGreen md:w-[477px] lg:text-[25px] text-[20px] font-normal"
+              className={`bg-white rounded-3xl ${
+                errors.email ? "mb-5" : "mb-10"
+              } focus:ring-blue-500 focus:border-blue-500 block w-full h-[55px] pl-[41px] dark:focus:ring-blue-500 dark:focus:border-blue-500 text-customGreen placeholder-customGreen md:w-[477px] lg:text-[25px] text-[20px] font-normal`}
               placeholder="confirm password"
             />
             {errors.confirmPassword && (
-              <div className="text-red-500 mb-10">
+              <div className="text-red-500 mb-5">
                 {errors.confirmPassword.message}
               </div>
             )}
@@ -128,7 +132,6 @@ function Register() {
               </button>
             </div>
           </form>
-
           {/* Link to login */}
           <div className="h-[40px] text-white flex  items-center mt-10 lg:mt-20">
             <Link to="/login">

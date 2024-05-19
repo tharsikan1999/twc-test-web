@@ -79,11 +79,13 @@ function Login() {
                   message: "Invalid email address",
                 },
               })}
-              className="bg-white rounded-3xl mb-10 focus:ring-blue-500 focus:border-blue-500 block w-full h-[55px] pl-[41px] dark:focus:ring-blue-500 dark:focus:border-blue-500 text-customGreen placeholder-customGreen md:w-[477px] lg:text-[25px] text-[20px] font-normal"
+              className={`bg-white rounded-3xl ${
+                errors.email ? "mb-5" : "mb-10"
+              } focus:ring-blue-500 focus:border-blue-500 block w-full h-[55px] pl-[41px] dark:focus:ring-blue-500 dark:focus:border-blue-500 text-customGreen placeholder-customGreen md:w-[477px] lg:text-[25px] text-[20px] font-normal`}
               placeholder="e-mail"
             />
             {errors.email && (
-              <div className="text-red-500 mb-10">{errors.email.message}</div>
+              <div className="text-red-500 mb-5">{errors.email.message}</div>
             )}
 
             <input
@@ -95,13 +97,13 @@ function Login() {
                   message: "Password must be at least 8 characters",
                 },
               })}
-              className="bg-white rounded-3xl mb-10 focus:ring-blue-500 focus:border-blue-500 block w-full h-[55px] pl-[41px] dark:focus:ring-blue-500 dark:focus:border-blue-500 text-customGreen placeholder-customGreen md:w-[477px] lg:text-[25px] text-[20px] font-normal"
+              className={`bg-white rounded-3xl ${
+                errors.email ? "mb-5" : "mb-10"
+              } focus:ring-blue-500 focus:border-blue-500 block w-full h-[55px] pl-[41px] dark:focus:ring-blue-500 dark:focus:border-blue-500 text-customGreen placeholder-customGreen md:w-[477px] lg:text-[25px] text-[20px] font-normal`}
               placeholder="password"
             />
             {errors.password && (
-              <div className="text-red-500 mb-10">
-                {errors.password.message}
-              </div>
+              <div className="text-red-500 mb-5">{errors.password.message}</div>
             )}
 
             <div className=" flex justify-between items-center md:flex-row flex-col mt-8 ">
