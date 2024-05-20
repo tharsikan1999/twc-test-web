@@ -5,6 +5,7 @@ import Ellipse01 from "../assets/img/Ellipse 1.png";
 import RightImg from "../assets/img/Right_back.png";
 import LeftImage from "../assets/img/Left_back.png";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Welcome() {
   const navigate = useNavigate();
@@ -16,6 +17,16 @@ function Welcome() {
       navigate("/login");
     }
   };
+
+  const handleLogout = () => {
+    // Remove JWT token from local storage
+    localStorage.removeItem("jwt");
+
+    // Redirect to login page
+    navigate("/login");
+    toast.success("Logged out successfully");
+  };
+
   return (
     <main
       className="w-full min-h-screen flex flex-col lg:items-center lg:relative "
@@ -69,7 +80,10 @@ function Welcome() {
                 </button>
               </div>
             </form>
-            <div className="flex space-x-3 items-center justify-center cursor-pointer lg:mt-14 w-full lg:w-auto absolute  lg:right-14 bottom-10 lg:bottom-14">
+            <div
+              onClick={handleLogout}
+              className="flex space-x-3 items-center justify-center cursor-pointer lg:mt-14 w-full lg:w-auto absolute  lg:right-14 bottom-10 lg:bottom-14"
+            >
               <img
                 src={logoutIMG}
                 alt="logout IMG"

@@ -74,6 +74,15 @@ function AddContact() {
     }
   };
 
+  const handleLogout = () => {
+    // Remove JWT token from local storage
+    localStorage.removeItem("jwt");
+
+    // Redirect to login page
+    navigate("/login");
+    toast.success("Logged out successfully");
+  };
+
   return (
     <main
       className="w-full min-h-screen flex flex-col lg:items-center lg:relative "
@@ -217,7 +226,10 @@ function AddContact() {
             </form>
           </div>
         </div>
-        <div className="flex space-x-3 items-center justify-center cursor-pointer lg:mt-14 w-full lg:w-auto absolute  lg:right-14  lg:bottom-14  z-50 bottom-10">
+        <div
+          onClick={handleLogout}
+          className="flex space-x-3 items-center justify-center cursor-pointer lg:mt-14 w-full lg:w-auto absolute  lg:right-14  lg:bottom-14  z-50 bottom-10"
+        >
           <img
             src={logoutIMG}
             alt="logout IMG"

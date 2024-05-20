@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaRegTrashAlt, FaPen } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import useStore from "../store/store";
@@ -25,6 +25,7 @@ interface User {
 }
 
 function Contacts() {
+  const navigate = useNavigate();
   const { contacts, editContact, deleteContact } = useStore();
   FetchContacts();
 
@@ -92,6 +93,15 @@ function Contacts() {
         [field]: e.target.value,
       });
     }
+  };
+
+  const handleLogout = () => {
+    // Remove JWT token from local storage
+    localStorage.removeItem("jwt");
+
+    // Redirect to login page
+    navigate("/login");
+    toast.success("Logged out successfully");
   };
 
   return (
@@ -294,7 +304,10 @@ function Contacts() {
             </div>
           </div>
         </div>
-        <div className="flex space-x-3 items-center justify-center cursor-pointer 2xl:mt-14 w-full 2xl:w-auto absolute  2xl:right-14 bottom-0 2xl:bottom-14  z-50 ">
+        <div
+          onClick={handleLogout}
+          className="flex space-x-3 items-center justify-center cursor-pointer 2xl:mt-14 w-full 2xl:w-auto absolute  2xl:right-14 bottom-0 2xl:bottom-14  z-50 "
+        >
           <img
             src={logoutIMG}
             alt="logout IMG"
