@@ -218,7 +218,9 @@ function Contacts() {
                                       ? "Male"
                                       : "Female";
                                   handleChange(
-                                    { target: { value: newGender } },
+                                    {
+                                      target: { value: newGender },
+                                    } as React.ChangeEvent<HTMLInputElement>,
                                     "gender"
                                   );
                                 }}
@@ -258,7 +260,7 @@ function Contacts() {
                                 Save
                               </button>
                               <MdCancel
-                                className="ml-2 cursor-pointer text-red-500 text-2xl"
+                                className="ml-1 cursor-pointer text-red-500 text-2xl"
                                 onClick={handleCancelEdit}
                               />
                             </div>
