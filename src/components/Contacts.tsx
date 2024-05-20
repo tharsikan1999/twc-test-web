@@ -1,32 +1,109 @@
-import logo from "../assets/img/Logo-white.png";
-import contactIMG from "../assets/img/contacts portal white.png";
-import logoutIMG from "../assets/img/bx_log-out-circle.png";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { FaRegTrashAlt, FaPen } from "react-icons/fa";
+import { MdCancel } from "react-icons/md";
+import useStore from "../store/store";
+import FetchContacts from "../store/fetchContacts";
 import Man from "../assets/img/man.png";
 import Girl from "../assets/img/girl.png";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { FaPen } from "react-icons/fa";
-import { FiRefreshCw } from "react-icons/fi";
 import Ellipse01 from "../assets/img/Ellipse 1.png";
 import RightImg from "../assets/img/Right_back.png";
 import LeftImg from "../assets/img/Left_back.png";
-import { Link } from "react-router-dom";
-import useStore from "../store/store";
-import FetchContacts from "../store/FetchContacts";
+import logoutIMG from "../assets/img/bx_log-out-circle.png";
+import logo from "../assets/img/Logo-white.png";
+import contactIMG from "../assets/img/contacts portal white.png";
+import { FiRefreshCw } from "react-icons/fi";
+import axios from "axios";
+import { toast } from "react-toastify";
+
+interface User {
+  id: string;
+  name: string;
+  gender: string;
+  email: string;
+  phone: string;
+}
 
 function Contacts() {
   const { contacts, editContact, deleteContact } = useStore();
   FetchContacts();
 
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [editedUser, setEditedUser] = useState<User | null>(null);
+
+  const handleEdit = (index: number) => {
+    // Enter edit mode for the specified row
+    setEditIndex(index);
+    setEditedUser(contacts[index]);
+  };
+
+  const handleSaveEdit = async () => {
+    if (editIndex !== null && editedUser) {
+      try {
+        // Update locally
+        editContact(editedUser.id, editedUser);
+
+        // Update remotely
+        const token = localStorage.getItem("jwt");
+
+        if (!token) {
+          throw new Error("JWT token not found in local storage");
+        }
+
+        // Send a PUT request to update the user
+        await axios.put(
+          `http://localhost:3333/contacts/update/${editedUser.id}`,
+          {
+            name: editedUser.name,
+            gender: editedUser.gender,
+            email: editedUser.email,
+            phone: editedUser.phone,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        toast.success("User updated successfully");
+        // Exit edit mode
+        setEditIndex(null);
+        setEditedUser(null);
+      } catch (error) {
+        toast.error("Failed to update user. Please try again.");
+        console.error("Error updating user:", error);
+      }
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditIndex(null);
+    setEditedUser(null);
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: keyof User
+  ) => {
+    if (editedUser) {
+      setEditedUser({
+        ...editedUser,
+        [field]: e.target.value,
+      });
+    }
+  };
+
   return (
     <main
-      className=" w-full min-h-screen flex flex-col lg:items-center lg:relative"
+      className="w-full min-h-screen flex flex-col lg:items-center lg:relative"
       style={{ fontFamily: "FuturaMediumBT" }}
     >
-      <div className="relative w-full h-screen flex ">
+      <div className="relative w-full h-screen flex">
         <img
           src={Ellipse01}
           alt=""
-          className="  w-full h-full object-cover z-10"
+          className="w-full h-full object-cover z-10"
         />
         <div className="absolute left-0 bottom-0">
           <img src={LeftImg} alt="" className="" />
@@ -34,20 +111,8 @@ function Contacts() {
         <div className="absolute right-0 top-0">
           <img src={RightImg} alt="" className="" />
         </div>
-
-        <div className="flex space-x-3 items-center justify-center cursor-pointer 2xl:mt-14 w-full 2xl:w-auto absolute  2xl:right-14 bottom-0 2xl:bottom-14  z-50 ">
-          <img
-            src={logoutIMG}
-            alt="logout IMG"
-            className="md:w-[43px] md:h-[43px] h-8 w-8"
-          />
-          <p className="underline underline-offset-4 text-white font-normal text-[20px] md:text-[25px]">
-            Logout
-          </p>
-        </div>
-
         <div className="absolute top-0 z-20 w-full flex justify-center max-h-screen min-h-screen overflow-scroll">
-          <div className="lg:w-3/4 w-[90%] ">
+          <div className="lg:w-3/4 w-[90%]">
             {/* Header Section */}
             <div className="w-full flex flex-col items-center lg:items-start mt-[72px]">
               <div>
@@ -69,7 +134,6 @@ function Contacts() {
                 />
               </div>
             </div>
-
             {/* Contacts Header and Add Button */}
             <div className="flex justify-between items-center lg:mt-14 sm:px-5">
               <h1 className="text-[30px] md:text-[50px] my-10 font-bold text-white text-left">
@@ -84,10 +148,9 @@ function Contacts() {
                 </button>
               </Link>
             </div>
-
             {/* Contacts Table */}
-            <div className="relative overflow-x-auto shadow-md bg-white rounded-[30px] mb-32 ">
-              <table className="w-full text-sm text-left rtl:text-right overflow-scroll ">
+            <div className="relative overflow-x-auto shadow-md bg-white rounded-[30px] mb-32">
+              <table className="w-full text-sm text-left rtl:text-right overflow-scroll">
                 <thead className="text-customGreen font-bold md:text-[18px] text-[15px] uppercase">
                   <tr>
                     <th scope="col" className="px-6 py-3"></th>
@@ -113,7 +176,6 @@ function Contacts() {
                       key={index}
                       className="text-[17px] font-normal text-customGreen"
                     >
-                      {/* User's Image */}
                       <th
                         scope="row"
                         className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
@@ -124,33 +186,121 @@ function Contacts() {
                           alt={`${user.name} image`}
                         />
                       </th>
+                      {/* Edit Mode or Display Mode */}
+                      {editIndex === index ? (
+                        <>
+                          <td className=" px-3 py-3">
+                            <div className=" relative">
+                              <input
+                                type="text"
+                                value={editedUser?.name}
+                                onChange={(e) => handleChange(e, "name")}
+                                className="h-[35px]  bg-customGreen bg-opacity-10 pl-3 border-customGreen"
+                              />
+                              <div className="h-[30px] w-[2px] bg-customGreen bg-opacity-75 absolute top-[2px] right-2 lg:right-5"></div>
+                            </div>
+                          </td>
+                          <td className="px-3 py-3">
+                            <div className="relative">
+                              <input
+                                type="text"
+                                value={editedUser?.gender}
+                                onChange={(e) => handleChange(e, "gender")}
+                                className="h-[35px] bg-customGreen bg-opacity-10 pl-3 border-customGreen w-full pr-8"
+                              />
+                              {/* Event handler for the refresh button */}
+                              <FiRefreshCw
+                                className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                                onClick={() => {
+                                  // Toggle gender value between 'female' and 'male'
+                                  const newGender =
+                                    editedUser?.gender === "Female"
+                                      ? "Male"
+                                      : "Female";
+                                  handleChange(
+                                    { target: { value: newGender } },
+                                    "gender"
+                                  );
+                                }}
+                              />
+                            </div>
+                          </td>
 
-                      <>
-                        <td className="px-6 py-4">{user.name}</td>
-                        <td className="px-6 py-4">{user.gender}</td>
-                        <td className="px-6 py-4">{user.email}</td>
-                        <td className="px-6 py-4">{user.phone}</td>
-                        <td className="px-6 py-4">
-                          <FaPen
-                            className="cursor-pointer"
-                            onClick={() =>
-                              editContact(user.id, { name: "New Name" })
-                            } // Replace with actual edit logic
-                          />
-                        </td>
-                        <td className="px-6 py-4">
-                          <FaRegTrashCan
-                            className="cursor-pointer"
-                            onClick={() => deleteContact(user.id)}
-                          />
-                        </td>
-                      </>
+                          <td className=" px-3 py-3">
+                            <div className=" relative">
+                              <input
+                                type="text"
+                                value={editedUser?.email}
+                                onChange={(e) => handleChange(e, "email")}
+                                className="h-[35px]  bg-customGreen bg-opacity-10 pl-3 border-customGreen"
+                              />
+                              <div className="h-[30px] w-[2px] bg-customGreen bg-opacity-75 absolute top-[2px] lg:right-7 right-4 "></div>
+                            </div>
+                          </td>
+                          <td className=" px-3 py-3">
+                            <div className=" relative">
+                              <input
+                                type="text"
+                                value={editedUser?.phone}
+                                onChange={(e) => handleChange(e, "phone")}
+                                className="h-[35px]  bg-customGreen bg-opacity-10 pl-3 border-customGreen"
+                              />
+                              <div className="h-[30px] w-[2px] bg-customGreen bg-opacity-75 absolute top-[2px] right-2 lg:right-5"></div>
+                            </div>
+                          </td>
+                          <td className="text-right">
+                            {/* Save and Cancel Buttons */}
+                            <div className="  flex space-x-3 justify-between items-center">
+                              <button
+                                className="w-[72px] h-[35px] bg-customGreen text-white rounded-[50px] text-[16px] font-normal leading-3"
+                                onClick={handleSaveEdit}
+                              >
+                                Save
+                              </button>
+                              <MdCancel
+                                className="ml-2 cursor-pointer text-red-500 text-2xl"
+                                onClick={handleCancelEdit}
+                              />
+                            </div>
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          {/* Display Mode: Render user details */}
+                          <td className="px-6 py-4">{user.name}</td>
+                          <td className="px-6 py-4">{user.gender}</td>
+                          <td className="px-6 py-4">{user.email}</td>
+                          <td className="px-6 py-4">{user.phone}</td>
+                          <td className="px-6 py-4">
+                            <FaPen
+                              className="cursor-pointer"
+                              onClick={() => handleEdit(index)}
+                            />
+                          </td>
+                          <td className="px-6 py-4">
+                            <FaRegTrashAlt
+                              className="cursor-pointer"
+                              onClick={() => deleteContact(user.id)}
+                            />
+                          </td>
+                        </>
+                      )}
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           </div>
+        </div>
+        <div className="flex space-x-3 items-center justify-center cursor-pointer 2xl:mt-14 w-full 2xl:w-auto absolute  2xl:right-14 bottom-0 2xl:bottom-14  z-50 ">
+          <img
+            src={logoutIMG}
+            alt="logout IMG"
+            className="md:w-[43px] md:h-[43px] h-8 w-8"
+          />
+          <p className="underline underline-offset-4 text-white font-normal text-[20px] md:text-[25px]">
+            Logout
+          </p>
         </div>
       </div>
     </main>

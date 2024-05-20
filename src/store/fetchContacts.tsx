@@ -5,6 +5,8 @@ import axios from "axios";
 const FetchContacts = () => {
   const setContacts = useStore((state) => state.setContacts);
 
+  const GET_API_URL = "http://localhost:3333/contacts/all"; // Replace with your actual API URL
+
   useEffect(() => {
     const fetchContacts = async () => {
       try {
@@ -14,7 +16,7 @@ const FetchContacts = () => {
           throw new Error("JWT token not found in local storage");
         }
 
-        const res = await axios.get("http://localhost:3333/contacts/all", {
+        const res = await axios.get(`${GET_API_URL}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
