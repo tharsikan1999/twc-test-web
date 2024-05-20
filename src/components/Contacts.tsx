@@ -10,70 +10,12 @@ import Ellipse01 from "../assets/img/Ellipse 1.png";
 import RightImg from "../assets/img/Right_back.png";
 import LeftImg from "../assets/img/Left_back.png";
 import { Link } from "react-router-dom";
+import useStore from "../store/store";
+import FetchContacts from "../store/FetchContacts";
 
 function Contacts() {
-  const data = [
-    {
-      name: "John Doe",
-      gender: "Male",
-      email: "john.doe@example.com",
-      phone: "+1234567890",
-    },
-    {
-      name: "Jane Smith",
-      gender: "Female",
-      email: "jane.smith@example.com",
-      phone: "+1987654321",
-    },
-    {
-      name: "Alex Johnson",
-      gender: "Male",
-      email: "alex.johnson@example.com",
-      phone: "+1555555555",
-    },
-    {
-      name: "Emily Brown",
-      gender: "Female",
-      email: "emily.brown@example.com",
-      phone: "+1777777777",
-    },
-    {
-      name: "Michael Lee",
-      gender: "Male",
-      email: "michael.lee@example.com",
-      phone: "+1888888888",
-    },
-    {
-      name: "Emma Garcia",
-      gender: "Female",
-      email: "emma.garcia@example.com",
-      phone: "+1666666666",
-    },
-    {
-      name: "William Martinez",
-      gender: "Male",
-      email: "william.martinez@example.com",
-      phone: "+1444444444",
-    },
-    {
-      name: "Olivia Robinson",
-      gender: "Female",
-      email: "olivia.robinson@example.com",
-      phone: "+1222222222",
-    },
-    {
-      name: "James Taylor",
-      gender: "Male",
-      email: "james.taylor@example.com",
-      phone: "+1333333333",
-    },
-    {
-      name: "Sophia White",
-      gender: "Female",
-      email: "sophia.white@example.com",
-      phone: "+1999999999",
-    },
-  ];
+  const { contacts, editContact, deleteContact } = useStore();
+  FetchContacts();
 
   return (
     <main
@@ -104,7 +46,7 @@ function Contacts() {
           </p>
         </div>
 
-        <div className="absolute top-0 z-20 w-full flex justify-center max-h-screen min-h-screen   overflow-scroll">
+        <div className="absolute top-0 z-20 w-full flex justify-center max-h-screen min-h-screen overflow-scroll">
           <div className="lg:w-3/4 w-[90%] ">
             {/* Header Section */}
             <div className="w-full flex flex-col items-center lg:items-start mt-[72px]">
@@ -166,7 +108,7 @@ function Contacts() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((user, index) => (
+                  {contacts.map((user, index) => (
                     <tr
                       key={index}
                       className="text-[17px] font-normal text-customGreen"
@@ -189,10 +131,18 @@ function Contacts() {
                         <td className="px-6 py-4">{user.email}</td>
                         <td className="px-6 py-4">{user.phone}</td>
                         <td className="px-6 py-4">
-                          <FaPen className="cursor-pointer" />
+                          <FaPen
+                            className="cursor-pointer"
+                            onClick={() =>
+                              editContact(user.id, { name: "New Name" })
+                            } // Replace with actual edit logic
+                          />
                         </td>
                         <td className="px-6 py-4">
-                          <FaRegTrashCan className="cursor-pointer" />
+                          <FaRegTrashCan
+                            className="cursor-pointer"
+                            onClick={() => deleteContact(user.id)}
+                          />
                         </td>
                       </>
                     </tr>

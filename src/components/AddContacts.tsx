@@ -9,6 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "react-toastify";
+import useStore from "../store/store";
+import axios from "axios";
 
 enum Gender {
   Male = "male",
@@ -53,8 +55,19 @@ function AddContact() {
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     try {
+      // Retrieve JWT token from local storage
+      const token = localStorage.getItem("jwt");
+
+      if (!token) {
+        throw new Error("JWT token not found in local storage");
+      }
+
+      await axios.post("http://localhost:3333/contacts/add", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       toast.success("Contact added successfully");
-      console.log(data);
       navigate("/contacts");
     } catch (error) {
       toast.error("An error occurred");
