@@ -15,6 +15,9 @@ import contactIMG from "../assets/img/contacts portal white.png";
 import { FiRefreshCw } from "react-icons/fi";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ConfirmationSave from "./ConfirmationSave";
+import ConfirmationDialog from "./ConfirmationDialog";
+import ConfirmationDelete from "./ConfirmationDelete";
 
 interface User {
   id: string;
@@ -31,6 +34,19 @@ function Contacts() {
 
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editedUser, setEditedUser] = useState<User | null>(null);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
+
+  const [userID, setUserID] = useState<string | null>(null);
+
+  const handleCloseConfirmation = () => {
+    setIsConfirmationOpen(false);
+  };
+
+  const deleteHandleCloseConfirmation = () => {
+    setIsDeleteConfirmationOpen(false);
+  };
 
   const handleEdit = (index: number) => {
     // Enter edit mode for the specified row
@@ -66,6 +82,8 @@ function Contacts() {
             },
           }
         );
+
+        setIsConfirmationOpen(true);
 
         toast.success("User updated successfully");
         // Exit edit mode
@@ -104,6 +122,19 @@ function Contacts() {
     toast.success("Logged out successfully");
   };
 
+  const handleConfirm = () => {
+    if (userID !== null) {
+      deleteContact(userID);
+      setIsConfirmationOpen(false);
+      setIsDeleteConfirmationOpen(true);
+    }
+  };
+
+  const handleDeleteContact = (id: string) => {
+    setIsConfirmationOpen(true);
+    setUserID(id);
+  };
+
   return (
     <main
       className="w-full min-h-screen flex flex-col lg:items-center lg:relative"
@@ -115,7 +146,7 @@ function Contacts() {
           alt=""
           className="w-full h-full object-cover z-10"
         />
-        <div className="absolute left-0 bottom-0">
+        <div className="absolute left-0 bottom-ConfirmationDelete0">
           <img src={LeftImg} alt="" className="" />
         </div>
         <div className="absolute right-0 top-0">
@@ -181,124 +212,146 @@ function Contacts() {
                   </tr>
                 </thead>
                 <tbody>
-                  {contacts.map((user, index) => (
-                    <tr
-                      key={index}
-                      className="text-[17px] font-normal text-customGreen"
-                    >
-                      <th
-                        scope="row"
-                        className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
+                  {contacts && contacts.length > 0 ? (
+                    contacts.map((user, index) => (
+                      <tr
+                        key={index}
+                        className="text-[17px] font-normal text-customGreen"
                       >
-                        <img
-                          className="w-[59px] h/[59px] cursor-pointer rounded-full"
-                          src={user.gender === "Male" ? Man : Girl}
-                          alt={`${user.name} image`}
-                        />
-                      </th>
-                      {/* Edit Mode or Display Mode */}
-                      {editIndex === index ? (
-                        <>
-                          <td className=" px-3 py-3">
-                            <div className=" relative">
-                              <input
-                                type="text"
-                                value={editedUser?.name}
-                                onChange={(e) => handleChange(e, "name")}
-                                className="h-[35px]  bg-customGreen bg-opacity-10 pl-3 border-customGreen"
-                              />
-                              <div className="h-[30px] w-[2px] bg-customGreen bg-opacity-75 absolute top-[2px] right-2 lg:right-5"></div>
-                            </div>
-                          </td>
-                          <td className="px-3 py-3">
-                            <div className="relative">
-                              <input
-                                type="text"
-                                value={editedUser?.gender}
-                                onChange={(e) => handleChange(e, "gender")}
-                                className="h-[35px] bg-customGreen bg-opacity-10 pl-3 border-customGreen w-full pr-8"
-                              />
-                              {/* Event handler for the refresh button */}
-                              <FiRefreshCw
-                                className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                                onClick={() => {
-                                  // Toggle gender value between 'female' and 'male'
-                                  const newGender =
-                                    editedUser?.gender === "Female"
-                                      ? "Male"
-                                      : "Female";
-                                  handleChange(
-                                    {
-                                      target: { value: newGender },
-                                    } as React.ChangeEvent<HTMLInputElement>,
-                                    "gender"
-                                  );
-                                }}
-                              />
-                            </div>
-                          </td>
+                        <th
+                          scope="row"
+                          className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
+                        >
+                          <img
+                            className="w-[59px] h/[59px] cursor-pointer rounded-full"
+                            src={user.gender === "Male" ? Man : Girl}
+                            alt={`${user.name} image`}
+                          />
+                        </th>
+                        {/* Edit Mode or Display Mode */}
+                        {editIndex === index ? (
+                          <>
+                            <td className=" px-3 py-3">
+                              <div className=" relative">
+                                <input
+                                  type="text"
+                                  value={editedUser?.name}
+                                  onChange={(e) => handleChange(e, "name")}
+                                  className="h-[35px]  bg-customGreen bg-opacity-10 pl-3 border-customGreen"
+                                />
+                                <div className="h-[30px] w-[2px] bg-customGreen bg-opacity-75 absolute top-[2px] right-2 lg:right-5"></div>
+                              </div>
+                            </td>
+                            <td className="px-3 py-3">
+                              <div className="relative">
+                                <input
+                                  type="text"
+                                  value={editedUser?.gender}
+                                  onChange={(e) => handleChange(e, "gender")}
+                                  className="h-[35px] bg-customGreen bg-opacity-10 pl-3 border-customGreen w-full pr-8"
+                                />
+                                {/* Event handler for the refresh button */}
+                                <FiRefreshCw
+                                  className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                                  onClick={() => {
+                                    // Toggle gender value between 'female' and 'male'
+                                    const newGender =
+                                      editedUser?.gender === "Female"
+                                        ? "Male"
+                                        : "Female";
+                                    handleChange(
+                                      {
+                                        target: { value: newGender },
+                                      } as React.ChangeEvent<HTMLInputElement>,
+                                      "gender"
+                                    );
+                                  }}
+                                />
+                              </div>
+                            </td>
 
-                          <td className=" px-3 py-3">
-                            <div className=" relative">
-                              <input
-                                type="text"
-                                value={editedUser?.email}
-                                onChange={(e) => handleChange(e, "email")}
-                                className="h-[35px]  bg-customGreen bg-opacity-10 pl-3 border-customGreen"
+                            <td className=" px-3 py-3">
+                              <div className=" relative">
+                                <input
+                                  type="text"
+                                  value={editedUser?.email}
+                                  onChange={(e) => handleChange(e, "email")}
+                                  className="h-[35px]  bg-customGreen bg-opacity-10 pl-3 border-customGreen"
+                                />
+                                <div className="h-[30px] w-[2px] bg-customGreen bg-opacity-75 absolute top-[2px] lg:right-7 right-4 "></div>
+                              </div>
+                            </td>
+                            <td className=" px-3 py-3">
+                              <div className=" relative">
+                                <input
+                                  type="text"
+                                  value={editedUser?.phone}
+                                  onChange={(e) => handleChange(e, "phone")}
+                                  className="h-[35px]  bg-customGreen bg-opacity-10 pl-3 border-customGreen"
+                                />
+                                <div className="h-[30px] w-[2px] bg-customGreen bg-opacity-75 absolute top-[2px] right-2 lg:right-5"></div>
+                              </div>
+                            </td>
+                            <td className="text-right">
+                              {/* Save and Cancel Buttons */}
+                              <div className="  flex space-x-3 justify-between items-center">
+                                <button
+                                  className="w-[72px] h-[35px] bg-customGreen text-white rounded-[50px] text-[16px] font-normal leading-3"
+                                  onClick={handleSaveEdit}
+                                >
+                                  Save
+                                </button>
+                                <MdCancel
+                                  className="ml-1 cursor-pointer text-red-500 text-2xl"
+                                  onClick={handleCancelEdit}
+                                />
+                              </div>
+                            </td>
+                          </>
+                        ) : (
+                          <>
+                            {/* Display Mode: Render user details */}
+                            <td className="px-6 py-4">{user.name}</td>
+                            <td className="px-6 py-4">{user.gender}</td>
+                            <td className="px-6 py-4">{user.email}</td>
+                            <td className="px-6 py-4">{user.phone}</td>
+                            <td className="px-6 py-4">
+                              <FaPen
+                                className="cursor-pointer"
+                                onClick={() => handleEdit(index)}
                               />
-                              <div className="h-[30px] w-[2px] bg-customGreen bg-opacity-75 absolute top-[2px] lg:right-7 right-4 "></div>
-                            </div>
-                          </td>
-                          <td className=" px-3 py-3">
-                            <div className=" relative">
-                              <input
-                                type="text"
-                                value={editedUser?.phone}
-                                onChange={(e) => handleChange(e, "phone")}
-                                className="h-[35px]  bg-customGreen bg-opacity-10 pl-3 border-customGreen"
+                            </td>
+                            <td className="px-6 py-4">
+                              <FaRegTrashAlt
+                                className="cursor-pointer"
+                                onClick={() => handleDeleteContact(user.id)}
                               />
-                              <div className="h-[30px] w-[2px] bg-customGreen bg-opacity-75 absolute top-[2px] right-2 lg:right-5"></div>
-                            </div>
-                          </td>
-                          <td className="text-right">
-                            {/* Save and Cancel Buttons */}
-                            <div className="  flex space-x-3 justify-between items-center">
-                              <button
-                                className="w-[72px] h-[35px] bg-customGreen text-white rounded-[50px] text-[16px] font-normal leading-3"
-                                onClick={handleSaveEdit}
-                              >
-                                Save
-                              </button>
-                              <MdCancel
-                                className="ml-1 cursor-pointer text-red-500 text-2xl"
-                                onClick={handleCancelEdit}
+                              <ConfirmationSave
+                                isOpen={isConfirmationOpen}
+                                onCancel={handleCloseConfirmation}
                               />
-                            </div>
-                          </td>
-                        </>
-                      ) : (
-                        <>
-                          {/* Display Mode: Render user details */}
-                          <td className="px-6 py-4">{user.name}</td>
-                          <td className="px-6 py-4">{user.gender}</td>
-                          <td className="px-6 py-4">{user.email}</td>
-                          <td className="px-6 py-4">{user.phone}</td>
-                          <td className="px-6 py-4">
-                            <FaPen
-                              className="cursor-pointer"
-                              onClick={() => handleEdit(index)}
-                            />
-                          </td>
-                          <td className="px-6 py-4">
-                            <FaRegTrashAlt
-                              className="cursor-pointer"
-                              onClick={() => deleteContact(user.id)}
-                            />
-                          </td>
-                        </>
-                      )}
+                              <ConfirmationDialog
+                                isOpen={isConfirmationOpen}
+                                onCancel={handleCloseConfirmation}
+                                onConfirm={handleConfirm}
+                                message={`Do you want to delete the contact ${user.name}?`}
+                              />
+                              <ConfirmationDelete
+                                isOpen={isDeleteConfirmationOpen}
+                                onCancel={deleteHandleCloseConfirmation}
+                              />
+                            </td>
+                          </>
+                        )}
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td className="px-6 py-4 text-xl mb-5 text-center">
+                        No contacts found.
+                      </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
