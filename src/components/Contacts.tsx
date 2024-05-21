@@ -215,7 +215,7 @@ function Contacts() {
                   </tr>
                 </thead>
                 <tbody>
-                  {contacts && contacts.length > 0 ? (
+                  {Array.isArray(contacts) && contacts.length > 0 ? (
                     contacts.map((user, index) => (
                       <tr
                         key={index}
@@ -351,7 +351,7 @@ function Contacts() {
                     ))
                   ) : (
                     <tr>
-                      <td className="px-6 py-4 text-xl mb-5 text-center">
+                      <td className="px-6 pb-10 text-xl text-center">
                         No contacts found.
                       </td>
                     </tr>
