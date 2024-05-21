@@ -65,12 +65,25 @@ function Login() {
 
         toast.success("Login successful");
         navigate("/contacts/new");
+
+        // Set timeout to automatically logout after 1 hour
+        setTimeout(() => {
+          logout();
+          toast.warn("Session expired. Please login again.");
+        }, 3600 * 1000); // 1 hour
       }
     } catch (error) {
       console.log(error);
       toast.error("Login failed");
     }
   };
+
+  const logout = () => {
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("jwtExpiryTime");
+    navigate("/login");
+  };
+
   return (
     <main
       className="flex w-full items-center  justify-between flex-col-reverse sm:flex-row sm:min-h-screen"

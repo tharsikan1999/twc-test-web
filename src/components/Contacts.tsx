@@ -35,6 +35,8 @@ function Contacts() {
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editedUser, setEditedUser] = useState<User | null>(null);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] =
+    useState(false);
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
 
@@ -42,6 +44,7 @@ function Contacts() {
 
   const handleCloseConfirmation = () => {
     setIsConfirmationOpen(false);
+    setIsConfirmationDialogOpen(false);
   };
 
   const deleteHandleCloseConfirmation = () => {
@@ -125,13 +128,13 @@ function Contacts() {
   const handleConfirm = () => {
     if (userID !== null) {
       deleteContact(userID);
-      setIsConfirmationOpen(false);
+      setIsConfirmationDialogOpen(false);
       setIsDeleteConfirmationOpen(true);
     }
   };
 
   const handleDeleteContact = (id: string) => {
-    setIsConfirmationOpen(true);
+    setIsConfirmationDialogOpen(true);
     setUserID(id);
   };
 
@@ -326,12 +329,9 @@ function Contacts() {
                                 className="cursor-pointer"
                                 onClick={() => handleDeleteContact(user.id)}
                               />
-                              <ConfirmationSave
-                                isOpen={isConfirmationOpen}
-                                onCancel={handleCloseConfirmation}
-                              />
+
                               <ConfirmationDialog
-                                isOpen={isConfirmationOpen}
+                                isOpen={isConfirmationDialogOpen}
                                 onCancel={handleCloseConfirmation}
                                 onConfirm={handleConfirm}
                                 message={`Do you want to delete the contact ${user.name}?`}
@@ -339,6 +339,10 @@ function Contacts() {
                               <ConfirmationDelete
                                 isOpen={isDeleteConfirmationOpen}
                                 onCancel={deleteHandleCloseConfirmation}
+                              />
+                              <ConfirmationSave
+                                isOpen={isConfirmationOpen}
+                                onCancel={handleCloseConfirmation}
                               />
                             </td>
                           </>
