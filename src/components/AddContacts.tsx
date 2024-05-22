@@ -10,6 +10,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createContact } from "../api/Api";
 
 enum Gender {
   Male = "male",
@@ -44,6 +46,8 @@ type FormFields = z.infer<typeof schema>;
 
 function AddContact() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const {
     register,
     handleSubmit,
@@ -52,26 +56,16 @@ function AddContact() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    try {
-      // Retrieve JWT token from local storage
-      const token = localStorage.getItem("jwt");
-
-      if (!token) {
-        throw new Error("JWT token not found in local storage");
-      }
-
-      await axios.post("http://localhost:3333/contacts/add", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      toast.success("Contact added successfully");
+  const createContactsMutation = useMutation({
+    mutationFn: createContact,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
       navigate("/contacts");
-    } catch (error) {
-      toast.error("An error occurred");
-      console.log(error);
-    }
+    },
+  });
+
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    createContactsMutation.mutate(data);
   };
 
   const handleLogout = () => {
