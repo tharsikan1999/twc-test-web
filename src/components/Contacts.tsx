@@ -16,8 +16,8 @@ import { toast } from "react-toastify";
 import ConfirmationSave from "./ConfirmationSave";
 import ConfirmationDialog from "./ConfirmationDialog";
 import ConfirmationDelete from "./ConfirmationDelete";
-import { useQuery } from "@tanstack/react-query";
-import { fetchContacts } from "../api/Api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchContacts, deleteContact } from "../api/Api";
 
 interface User {
   id: string;
@@ -29,6 +29,7 @@ interface User {
 
 function Contacts() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const {
     isLoading,
@@ -36,7 +37,7 @@ function Contacts() {
     data: ContactsData,
     error,
   } = useQuery({
-    queryKey: ["posts"],
+    queryKey: ["Contacts"],
     queryFn: fetchContacts,
   });
 
@@ -131,10 +132,18 @@ function Contacts() {
     toast.success("Logged out successfully");
   };
 
+  const deleteContactMutation = useMutation({
+    mutationFn: deleteContact,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Contacts"] });
+    },
+  });
+
   const handleConfirm = () => {
     if (userID !== null) {
       setIsConfirmationDialogOpen(false);
       setIsDeleteConfirmationOpen(true);
+      deleteContactMutation.mutate(userID);
     }
   };
 
