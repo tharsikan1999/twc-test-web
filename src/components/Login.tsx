@@ -7,6 +7,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "react-toastify";
 import axios from "axios";
+import useUserStore from "../store/Store";
+import { decodeToken } from "../utils/JwtDecode";
 
 const schema = z.object({
   email: z.string().email().min(1).max(255),
@@ -31,6 +33,10 @@ type FormFields = z.infer<typeof schema>;
 
 function Login() {
   const navigate = useNavigate();
+
+  const setCurrentUser = useUserStore((state) => state.setCurrentUser);
+  const clearCurrentUser = useUserStore((state) => state.clearCurrentUser);
+
   const {
     register,
     handleSubmit,
@@ -46,22 +52,31 @@ function Login() {
         password: data.password,
       });
 
-      //user does not exist
+      // User does not exist
       if (response.data === "User not found") {
         toast.error("User does not exist");
         return;
       }
 
-      //incorrect password
+      // Incorrect password
       if (response.data === "Invalid password") {
         toast.error("Incorrect password");
         return;
       }
 
-      //login successful
+      // Login successful
       if (response.status === 201) {
-        //store token in local storage
+        // Store token in local storage
         localStorage.setItem("jwt", response.data.accessToken);
+
+        // Decode token
+        const decodeJwt = decodeToken(response.data.accessToken);
+
+        // Store user info in global store
+        setCurrentUser({
+          userID: decodeJwt.userID,
+          email: decodeJwt.email,
+        });
 
         toast.success("Login successful");
         navigate("/contacts/new");
@@ -80,7 +95,7 @@ function Login() {
 
   const logout = () => {
     localStorage.removeItem("jwt");
-    localStorage.removeItem("jwtExpiryTime");
+    clearCurrentUser();
     navigate("/login");
   };
 
