@@ -13,8 +13,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createContact } from "../api/Api";
 
 enum Gender {
-  Male = "male",
-  Female = "female",
+  Male = "Male",
+  Female = "Female",
 }
 
 const schema = z.object({
@@ -168,33 +168,33 @@ function AddContact() {
                       Gender
                     </p>
                     <label
-                      htmlFor="male"
+                      htmlFor="Male"
                       className="text-[20px] lg:text-[25px] text-white font-normal flex items-center"
                     >
                       Male
                       <input
-                        id="male"
+                        id="Male"
                         {...register("gender", {
                           required: "Gender is required",
                         })}
                         type="radio"
-                        value="male"
+                        value="Male"
                         name="gender"
                         className="w-4 h-4 ml-10 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
                       />
                     </label>
                     <label
-                      htmlFor="female"
+                      htmlFor="Female"
                       className="text-[20px] lg:text-[25px] text-white font-normal flex items-center"
                     >
                       Female
                       <input
-                        id="female"
+                        id="Female"
                         {...register("gender", {
                           required: "Gender is required",
                         })}
                         type="radio"
-                        value="female"
+                        value="Female"
                         name="gender"
                         className="w-4 h-4 ml-10 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
                       />

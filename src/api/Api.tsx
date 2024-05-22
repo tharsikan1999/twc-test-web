@@ -20,7 +20,6 @@ const getAuthToken = () => {
 };
 
 // Fetch all contacts
-
 export const fetchContacts = async () => {
   try {
     const token = getAuthToken();
