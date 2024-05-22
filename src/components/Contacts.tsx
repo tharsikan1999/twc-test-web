@@ -2,8 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegTrashAlt, FaPen } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
-import useStore from "../store/store";
-import FetchContacts from "../store/fetchContacts";
 import Man from "../assets/img/man.png";
 import Girl from "../assets/img/girl.png";
 import Ellipse01 from "../assets/img/Ellipse 1.png";
@@ -18,6 +16,8 @@ import { toast } from "react-toastify";
 import ConfirmationSave from "./ConfirmationSave";
 import ConfirmationDialog from "./ConfirmationDialog";
 import ConfirmationDelete from "./ConfirmationDelete";
+import { useQuery } from "@tanstack/react-query";
+import { fetchContacts } from "../api/Api";
 
 interface User {
   id: string;
@@ -29,8 +29,16 @@ interface User {
 
 function Contacts() {
   const navigate = useNavigate();
-  const { contacts, editContact, deleteContact } = useStore();
-  FetchContacts();
+
+  const {
+    isLoading,
+    isError,
+    data: ContactsData,
+    error,
+  } = useQuery({
+    queryKey: ["posts"],
+    queryFn: fetchContacts,
+  });
 
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editedUser, setEditedUser] = useState<User | null>(null);
@@ -54,14 +62,12 @@ function Contacts() {
   const handleEdit = (index: number) => {
     // Enter edit mode for the specified row
     setEditIndex(index);
-    setEditedUser(contacts[index]);
   };
 
   const handleSaveEdit = async () => {
     if (editIndex !== null && editedUser) {
       try {
         // Update locally
-        editContact(editedUser.id, editedUser);
 
         // Update remotely
         const token = localStorage.getItem("jwt");
@@ -127,7 +133,6 @@ function Contacts() {
 
   const handleConfirm = () => {
     if (userID !== null) {
-      deleteContact(userID);
       setIsConfirmationDialogOpen(false);
       setIsDeleteConfirmationOpen(true);
     }
@@ -137,6 +142,9 @@ function Contacts() {
     setIsConfirmationDialogOpen(true);
     setUserID(id);
   };
+
+  if (isLoading) return "loading your Contacts...";
+  if (isError) return `Error: ${error.message}`;
 
   return (
     <main
@@ -215,8 +223,8 @@ function Contacts() {
                   </tr>
                 </thead>
                 <tbody>
-                  {Array.isArray(contacts) && contacts.length > 0 ? (
-                    contacts.map((user, index) => (
+                  {Array.isArray(ContactsData) && ContactsData.length > 0 ? (
+                    ContactsData.map((user, index) => (
                       <tr
                         key={index}
                         className="text-[17px] font-normal text-customGreen"
