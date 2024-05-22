@@ -9,7 +9,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createContact } from "../api/Api";
 
@@ -59,7 +58,7 @@ function AddContact() {
   const createContactsMutation = useMutation({
     mutationFn: createContact,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: ["Contacts"] });
       navigate("/contacts");
     },
   });

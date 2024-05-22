@@ -11,14 +11,13 @@ import logoutIMG from "../assets/img/bx_log-out-circle.png";
 import logo from "../assets/img/Logo-white.png";
 import contactIMG from "../assets/img/contacts portal white.png";
 import { FiRefreshCw } from "react-icons/fi";
-import axios from "axios";
 import { toast } from "react-toastify";
 import ConfirmationSave from "./ConfirmationSave";
 import ConfirmationDialog from "./ConfirmationDialog";
 import ConfirmationDelete from "./ConfirmationDelete";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchContacts, deleteContact } from "../api/Api";
-
+import { updateContact } from "../api/Api";
 interface User {
   id: string;
   name: string;
@@ -61,48 +60,24 @@ function Contacts() {
   };
 
   const handleEdit = (index: number) => {
-    // Enter edit mode for the specified row
     setEditIndex(index);
+    setEditedUser(ContactsData[index]);
   };
+
+  const updateContactsMutation = useMutation({
+    mutationFn: updateContact,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Contacts"] });
+      navigate("/contacts");
+    },
+  });
 
   const handleSaveEdit = async () => {
     if (editIndex !== null && editedUser) {
-      try {
-        // Update locally
-
-        // Update remotely
-        const token = localStorage.getItem("jwt");
-
-        if (!token) {
-          throw new Error("JWT token not found in local storage");
-        }
-
-        // Send a PUT request to update the user
-        await axios.put(
-          `http://localhost:3333/contacts/update/${editedUser.id}`,
-          {
-            name: editedUser.name,
-            gender: editedUser.gender,
-            email: editedUser.email,
-            phone: editedUser.phone,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        setIsConfirmationOpen(true);
-
-        toast.success("User updated successfully");
-        // Exit edit mode
-        setEditIndex(null);
-        setEditedUser(null);
-      } catch (error) {
-        toast.error("Failed to update user. Please try again.");
-        console.error("Error updating user:", error);
-      }
+      updateContactsMutation.mutate(editedUser);
+      setEditIndex(null);
+      setEditedUser(null);
+      setIsConfirmationOpen(true);
     }
   };
 

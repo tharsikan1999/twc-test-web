@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 const Base_API_URL = "http://localhost:3333/contacts";
 
 interface Contact {
+  id?: string;
   name: string;
   gender: string;
   email: string;
@@ -17,6 +18,8 @@ const getAuthToken = () => {
   }
   return token;
 };
+
+// Fetch all contacts
 
 export const fetchContacts = async () => {
   try {
@@ -35,6 +38,7 @@ export const fetchContacts = async () => {
   }
 };
 
+// Create a new contact
 export const createContact = async (contact: Contact): Promise<void> => {
   try {
     const token = getAuthToken();
@@ -52,6 +56,35 @@ export const createContact = async (contact: Contact): Promise<void> => {
   }
 };
 
+// Update a contact
+export const updateContact = async (contact: Contact): Promise<void> => {
+  try {
+    const token = getAuthToken();
+
+    // Send a PUT request to update the user
+    await axios.put(
+      `${Base_API_URL}/update/${contact.id}`,
+      {
+        name: contact.name,
+        gender: contact.gender,
+        email: contact.email,
+        phone: contact.phone,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    toast.success("User updated successfully");
+  } catch (error) {
+    toast.error("Failed to update user. Please try again.");
+    console.error("Error updating user:", error);
+  }
+};
+
+//delete a contact
 export const deleteContact = async (id: string): Promise<void> => {
   try {
     const token = getAuthToken();
